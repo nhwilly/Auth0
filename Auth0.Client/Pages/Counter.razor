@@ -1,0 +1,50 @@
+﻿@page "/counter"
+@using System.Security.Claims
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<h2></h2>
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+
+@if (user?.Claims?.Any() ?? false)
+{
+    @foreach (var claim in user.Claims)
+    {
+        <div style="display: flex; gap: 1rem;">
+            <strong>@claim.Type:</strong>
+            <span>@claim.Value</span>
+        </div>
+    }
+}
+else
+{
+    <div>No claims found</div>
+}
+<h5>@RendererInfo.Name</h5>
+
+@code {
+    private ClaimsPrincipal? user;
+    private string? name;
+    private string? id;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+        // name = user?.Identity?.Name;
+        // id = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    }
+
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

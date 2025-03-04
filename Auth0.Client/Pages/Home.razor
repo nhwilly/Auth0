@@ -1,0 +1,35 @@
+﻿@page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@using System.Security.Claims
+
+<PageTitle>Home</PageTitle>
+
+@if (user?.Claims?.Any() ?? false)
+{
+    @foreach (var claim in user.Claims)
+    {
+        <div style="display: flex; gap: 1rem;">
+            <strong>@claim.Type:</strong>
+            <span>@claim.Value</span>
+        </div>
+    }
+}
+else
+{
+    <div>No claims found</div>
+}
+<h5>@RendererInfo.Name</h5>
+
+@code {
+    private ClaimsPrincipal? user;
+    private string? name;
+    private string? id;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+         user = authState.User;
+        // name = user?.Identity?.Name;
+        // id = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    }
+}
