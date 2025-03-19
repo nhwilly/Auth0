@@ -7,6 +7,12 @@
 
 @if (user?.Claims?.Any() ?? false)
 {
+    <div>
+        <b>Identity provider:</b>@identityProvider
+    </div>
+    <div>
+        <b>Subject Id:</b>@id
+    </div>
     @foreach (var claim in user.Claims)
     {
         <div style="display: flex; gap: 1rem;">
@@ -25,11 +31,38 @@ else
     private ClaimsPrincipal? user;
     private string? name;
     private string? id;
+    private string? identityProvider;
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-         user = authState.User;
-        // name = user?.Identity?.Name;
-        // id = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        user = authState.User;
+        SplitSubjectId(user);
+    }
+    private void SplitSubjectId(ClaimsPrincipal claimsPrincipal)
+    {
+        if (!claimsPrincipal?.Claims?.Any() ?? false)
+        {
+            ClearValues();
+            return;
+        }
+        var claim = claimsPrincipal.Claims.FirstOrDefault(x =>
+            x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+
+        var claimValue = claim?.Value;
+
+        if (!claimValue.Contains("|"))
+        {
+            ClearValues();
+            return;
+        }
+        var parts = claimValue.Split('|');
+        identityProvider = parts[0];
+        id = parts[1];
+    }
+    private void ClearValues()
+    {
+        identityProvider = string.Empty;
+        id = string.Empty;
+
     }
 }
