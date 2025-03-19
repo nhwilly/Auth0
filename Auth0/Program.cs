@@ -4,6 +4,7 @@ using Auth0.Components;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Auth0;
 
@@ -25,8 +26,8 @@ public class Program
 
         builder.Services.AddAuth0WebAppAuthentication(options =>
         {
-            options.Domain = builder.Configuration["Auth0:Domain"];
-            options.ClientId = builder.Configuration["Auth0:ClientId"];
+            options.Domain = builder.Configuration["Auth0:Domain"] ?? throw new Exception("Missing Auth0:Domain from appsettings.json");
+            options.ClientId = builder.Configuration["Auth0:ClientId"] ?? throw new Exception("Missing Auth0:ClientId from appsettings.json");
             options.Scope = "openid profile email";
 
         });
