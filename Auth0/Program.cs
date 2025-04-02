@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Auth0.Auth;
 
 namespace Auth0;
 
@@ -32,6 +33,10 @@ public class Program
 
         });
         builder.Services.AddCascadingAuthenticationState();
+        builder.Services.AddScoped<AuthenticationStateProvider, Auth0EnhancedAuthStateProvider>();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IPermissionService, PermissionService>();
+        builder.Services.AddMemoryCache();
 
         var app = builder.Build();
 
