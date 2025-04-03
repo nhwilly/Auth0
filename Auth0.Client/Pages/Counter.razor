@@ -1,7 +1,6 @@
 ﻿@page "/counter"
 @using System.Security.Claims
 @attribute [Authorize]
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Counter</PageTitle>
 
@@ -33,12 +32,18 @@ else
     private ClaimsPrincipal? user;
     private string? name;
     private string? id;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
-        // name = user?.Identity?.Name;
-        // id = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+
+            user = state?.User;
+        }
     }
 
     private int currentCount = 0;

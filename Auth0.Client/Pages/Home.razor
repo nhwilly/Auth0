@@ -1,7 +1,6 @@
 ﻿@page "/"
-@inject AuthenticationStateProvider AuthenticationStateProvider
-
 @using System.Security.Claims
+@using SharedAuth
 
 <PageTitle>Home</PageTitle>
 
@@ -20,6 +19,19 @@
             <span>@claim.Value</span>
         </div>
     }
+    <hr>
+    @foreach (var permission in accountPermissions.ToList())
+    {
+        <div style="display: flex; gap: 1rem;">
+            <strong>@permission.Name</strong>
+            @foreach(var claim in permission.Claims.ToList())
+            {
+                <div style="display: flex; gap: 1rem; margin-left: 1rem;">
+                    @claim.Value
+                </div>
+            }
+        </div>
+    }
 }
 else
 {
@@ -32,11 +44,22 @@ else
     private string? name;
     private string? id;
     private string? identityProvider;
+    private List<AccountPermissions> accountPermissions = new List<AccountPermissions>();
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
-        SplitSubjectId(user);
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+            if (state is CustomAuthenticationState s)
+            {
+                accountPermissions = s.AccountPermissions;
+            }
+            user = state?.User;
+            SplitSubjectId(user);
+        }
     }
     private void SplitSubjectId(ClaimsPrincipal claimsPrincipal)
     {
@@ -50,7 +73,7 @@ else
 
         var claimValue = claim?.Value;
 
-        if (!claimValue.Contains("|"))
+        if (!claimValue?.Contains("|") ?? true)
         {
             ClearValues();
             return;

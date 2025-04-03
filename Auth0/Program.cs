@@ -1,11 +1,9 @@
 using Auth0.AspNetCore.Authentication;
-using Auth0.Client.Pages;
-using Auth0.Components;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Auth0.Auth;
+using Auth0.Components;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Auth0;
 
@@ -33,7 +31,7 @@ public class Program
 
         });
         builder.Services.AddCascadingAuthenticationState();
-        builder.Services.AddScoped<AuthenticationStateProvider, Auth0EnhancedAuthStateProvider>();
+        builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IPermissionService, PermissionService>();
         builder.Services.AddMemoryCache();

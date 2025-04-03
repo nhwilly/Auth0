@@ -24,4 +24,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SharedAuth\SharedAuth.csproj" />
+  </ItemGroup>
+
 </Project>
