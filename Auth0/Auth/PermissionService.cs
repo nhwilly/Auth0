@@ -82,9 +82,9 @@ public class PermissionService : IPermissionService
         }
     }
 
-    public List<AccountPermissions> GetMemberPermissions(ClaimsPrincipal user)
+    public List<AccountMemberPermissions> GetMemberPermissions(ClaimsPrincipal user)
     {
-        var accountPermissionsList = new List<AccountPermissions>();
+        var accountPermissionsList = new List<AccountMemberPermissions>();
         try
         {
             // Get the user ID from Auth0 claims
@@ -136,9 +136,9 @@ public class PermissionService : IPermissionService
             return accountPermissionsList;
     }
 
-    public AccountPermissions AddAccountPermissions(string accountName, string permissionValue)
+    public AccountMemberPermissions AddAccountPermissions(string accountName, string permissionValue)
     {
-        var accountPermissions = new AccountPermissions()
+        var accountPermissions = new AccountMemberPermissions()
         {
             Id = Guid.NewGuid(),
             Name = accountName,

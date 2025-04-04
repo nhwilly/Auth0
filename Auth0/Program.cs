@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using System.Text.Json;
 using Auth0.AspNetCore.Authentication;
 using Auth0.Auth;
 using Auth0.Components;
@@ -21,6 +23,28 @@ public class Program
             options =>
             {
                 options.SerializeAllClaims = true;
+                options.SerializationCallback = async (authState) =>
+                {
+                    // Get the existing ClaimsPrincipal
+                    var user = authState.User;
+
+                    if (user.Identity?.IsAuthenticated == true)
+                    {
+                        Console.WriteLine("Getting extra claim data...");
+                        var claimsData = user.Claims.Select(c => new ClaimData(c.Type, c.Value)).ToList();
+                        claimsData.Add(new ClaimData("blah", "blahValue"));
+                        // Create a new AuthenticationStateData object
+                        var customStateData = new AuthenticationStateData
+                        {
+                            Claims = claimsData
+                        };
+
+                        return customStateData;
+                    }
+
+                    // Return null for unauthenticated users
+                    return null;
+                };
             });
 
         builder.Services.AddAuth0WebAppAuthentication(options =>
@@ -58,6 +82,7 @@ public class Program
             var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
                     .WithRedirectUri(returnUrl)
                     .Build();
+            authenticationProperties.IsPersistent = true;
 
             await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
         });

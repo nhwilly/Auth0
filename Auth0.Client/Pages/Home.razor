@@ -44,7 +44,7 @@ else
     private string? name;
     private string? id;
     private string? identityProvider;
-    private List<AccountPermissions> accountPermissions = new List<AccountPermissions>();
+    private List<AccountMemberPermissions> accountPermissions = new List<AccountMemberPermissions>();
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
 
