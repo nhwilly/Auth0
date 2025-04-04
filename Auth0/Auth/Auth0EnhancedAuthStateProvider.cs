@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using SharedAuth;
 using System.Security.Claims;
 
 namespace Auth0.Auth;
@@ -77,7 +78,7 @@ public class Auth0EnhancedAuthStateProvider : RevalidatingServerAuthenticationSt
         await _permissionService.AddPermissionClaimsAsync(clonedUser);
 
         // Return the enhanced authentication state
-        return new AuthenticationState(clonedUser);
+        return new CustomAuthenticationState(clonedUser);
     }
 
     /// <summary>

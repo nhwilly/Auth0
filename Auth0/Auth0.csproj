@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Auth\CustomAuthStateProvider .cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Auth0.Client\Auth0.Client.csproj" />
     <ProjectReference Include="..\SharedAuth\SharedAuth.csproj" />
     <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />

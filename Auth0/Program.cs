@@ -6,6 +6,7 @@ using Auth0.Components;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using SharedAuth;
 
 namespace Auth0;
 
@@ -27,7 +28,14 @@ public class Program
                 {
                     // Get the existing ClaimsPrincipal
                     var user = authState.User;
-
+                    if(authState is CustomAuthenticationState customState)
+                    {
+                        // Add custom properties to the serialization
+                        var customData = new Dictionary<string, object>
+                        {
+                            { "AccountPermissions", customState.AccountPermissions }
+                        };
+                    }
                     if (user.Identity?.IsAuthenticated == true)
                     {
                         Console.WriteLine("Getting extra claim data...");
@@ -39,7 +47,7 @@ public class Program
                             Claims = claimsData
                         };
 
-                        return customStateData;
+                        return await Task.FromResult(customStateData);
                     }
 
                     // Return null for unauthenticated users
@@ -55,7 +63,7 @@ public class Program
 
         });
         builder.Services.AddCascadingAuthenticationState();
-        builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+        builder.Services.AddScoped<AuthenticationStateProvider, Auth0EnhancedAuthStateProvider>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IPermissionService, PermissionService>();
         builder.Services.AddMemoryCache();

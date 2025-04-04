@@ -1,7 +1,4 @@
-﻿using Auth0.Client.Auth;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using SharedAuth;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 namespace Auth0.Client;
 
 class Program
@@ -13,7 +10,6 @@ class Program
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddAuthenticationStateDeserialization();
         builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-        builder.Services.AddScoped<CustomAuthenticationState, CustomAuthenticationState>();
         await builder.Build().RunAsync();
     }
 }
