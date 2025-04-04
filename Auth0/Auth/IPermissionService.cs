@@ -8,6 +8,6 @@ public interface IPermissionService
 {/// <summary>
  /// Adds permission claims to the user principal
  /// </summary>
-    Task AddPermissionClaimsAsync(ClaimsPrincipal user);
+    //Task AddPermissionClaimsAsync(ClaimsPrincipal user);
     List<AccountMemberPermissions> GetMemberPermissions(ClaimsPrincipal user);
 }

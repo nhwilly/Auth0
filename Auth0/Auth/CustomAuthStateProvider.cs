@@ -1,38 +1,56 @@
 ﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server;
+using SharedAuth;
 
-namespace Auth0.Auth
+namespace Auth0.Auth;
+
+public class CustomAuthStateProvider : AuthenticationStateProvider
 {
-    //public class CustomAuthenticationStateProvider : AuthenticationStateProvider
-    //{
-    //    public override Task<AuthenticationState> GetAuthenticationStateAsync()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
-    public class CustomClaimsTransformation : IClaimsTransformation
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IPermissionService _permissionService;
+    private readonly ILogger<CustomAuthStateProvider> _logger;
+
+    public CustomAuthStateProvider(IHttpContextAccessor httpContextAccessor, IPermissionService permissionService, ILogger<CustomAuthStateProvider> logger)
     {
-        private readonly IConfiguration _configuration;
-
-        public CustomClaimsTransformation(IConfiguration configuration) => _configuration = configuration;
-
-        public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
-        {
-            if (principal.Identity is ClaimsIdentity identity)
-            {
-                //string? audience = _configuration["Auth0:Domain"];
-                //var roleClaims = identity.FindAll($"{audience}/roles").ToList();
-
-                //foreach (var roleClaim in roleClaims)
-                //{
-                //    identity.AddClaim(new Claim(ClaimTypes.Role, roleClaim.Value));
-                //}
-                Console.WriteLine($"CustomClaimsTransformation @ {DateTime.Now}");
-            }
-
-            return Task.FromResult(principal);
-        }
+        _httpContextAccessor = httpContextAccessor;
+        _permissionService = permissionService;
+        _logger = logger;
     }
+
+    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    {
+        _logger.LogInformation("CustomAuthStateProvider: Getting authentication state");
+
+        // Get the current user from the HttpContext
+        var user = _httpContextAccessor.HttpContext?.User;
+
+        if (user?.Identity?.IsAuthenticated != true)
+        {
+            // Return unauthenticated state if user is not authenticated
+            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+        }
+
+        // Clone the authenticated user to avoid modifying the original
+        var clonedUser = CloneUser(user);
+
+        // Enhance the cloned user with permission claims
+        var permissions = _permissionService.GetMemberPermissions(clonedUser);
+
+        // Return the enhanced authentication state
+        return new CustomAuthenticationState(clonedUser) { AccountPermissions = permissions };
+    }
+    private ClaimsPrincipal CloneUser(ClaimsPrincipal user)
+    {
+        // Create new ClaimsIdentity instances for each identity in the principal
+        var clonedIdentities = user.Identities.Select(identity =>
+            new ClaimsIdentity(
+                identity.Claims,
+                identity.AuthenticationType,
+                identity.NameClaimType,
+                identity.RoleClaimType));
+
+        // Create a new ClaimsPrincipal with the cloned identities
+        return new ClaimsPrincipal(clonedIdentities);
+    }
+
 }

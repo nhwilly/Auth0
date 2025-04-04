@@ -28,23 +28,25 @@ public class Program
                 {
                     // Get the existing ClaimsPrincipal
                     var user = authState.User;
-                    if(authState is CustomAuthenticationState customState)
+                    var isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+                    if (authState is CustomAuthenticationState customState && isAuthenticated)
                     {
-                        // Add custom properties to the serialization
-                        var customData = new Dictionary<string, object>
-                        {
-                            { "AccountPermissions", customState.AccountPermissions }
-                        };
-                    }
-                    if (user.Identity?.IsAuthenticated == true)
-                    {
+                        //    // Add custom properties to the serialization
+                        //    var customData = new Dictionary<string, object>
+                        //    {
+                        //        { "AccountPermissions", customState.AccountPermissions }
+                        //    };
+                        //}
+                        //if (user.Identity?.IsAuthenticated == true)
+                        //{
                         Console.WriteLine("Getting extra claim data...");
                         var claimsData = user.Claims.Select(c => new ClaimData(c.Type, c.Value)).ToList();
-                        claimsData.Add(new ClaimData("blah", "blahValue"));
+                        //claimsData.Add(new ClaimData("blah", "blahValue"));
                         // Create a new AuthenticationStateData object
-                        var customStateData = new AuthenticationStateData
+                        var customStateData = new CustomAuthenticationStateData
                         {
-                            Claims = claimsData
+                            Claims = claimsData,
+                            AccountPermissions = customState.AccountPermissions
                         };
 
                         return await Task.FromResult(customStateData);
@@ -63,7 +65,7 @@ public class Program
 
         });
         builder.Services.AddCascadingAuthenticationState();
-        builder.Services.AddScoped<AuthenticationStateProvider, Auth0EnhancedAuthStateProvider>();
+        builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IPermissionService, PermissionService>();
         builder.Services.AddMemoryCache();
