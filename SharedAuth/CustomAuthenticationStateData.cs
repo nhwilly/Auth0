@@ -1,29 +1,21 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 namespace SharedAuth;
 
-public class CustomAuthenticationStateData : AuthenticationStateData
+public class CustomAuthenticationStateData //: AuthenticationStateData
 {
-    public List<IdentityData> Identities { get; set; } = new();
-    public  const bool CustomStateData = true;
-
-    // Other custom properties...
-
-    // You might need to override methods from the base class
-    // to ensure your identities list is used during deserialization
+    public List<IdentityData> Identities { get; set; } = [];
 }
 
 public class IdentityData
 {
-    public string AuthenticationType { get; set; }
+    public required string AuthenticationType { get; set; }
     public bool IsAuthenticated { get; set; }
-    public string Name { get; set; }
-    public List<ClaimData> Claims { get; set; } = new();
+    public required string Name { get; set; }
+    public List<ClaimDto> Claims { get; set; } = [];
 }
 
-public class ClaimData
+public class ClaimDto
 {
-    public string Type { get; set; }
-    public string Value { get; set; }
-    public string ValueType { get; set; }
-    public string Issuer { get; set; }
+    public required string Type { get; set; }
+    public required string Value { get; set; }
 }
