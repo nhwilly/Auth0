@@ -4,38 +4,30 @@
 
 <PageTitle>Home</PageTitle>
 
-@if (user?.Claims?.Any() ?? false)
+@if (user?.Identities?.Any() ?? false)
 {
-    <div>
-        <b>Identity provider:</b>@identityProvider
-    </div>
-    <div>
-        <b>Subject Id:</b>@id
-    </div>
-    @foreach (var claim in user.Claims)
+
+    @foreach (var identity in user.Identities)
     {
-        <div style="display: flex; gap: 1rem;">
-            <strong>@claim.Type:</strong>
-            <span>@claim.Value</span>
+        <div>
+            <b>Authentication Type:</b>@identity.AuthenticationType
         </div>
-    }
-    <hr>
-    @foreach (var permission in accountPermissions.ToList())
-    {
-        <div style="display: flex; gap: 1rem;">
-            <strong>@permission.Name</strong>
-            @foreach(var claim in permission.Claims.ToList())
-            {
-                <div style="display: flex; gap: 1rem; margin-left: 1rem;">
-                    @claim.Value
-                </div>
-            }
+        <div>
+            <b>IsAuthenticated:</b>@identity.IsAuthenticated
         </div>
+        @foreach (var claim in identity.Claims)
+        {
+            <div style="display: flex; gap: 1rem;">
+                <strong>@claim.Type:</strong>
+                <span>@claim.Value</span>
+            </div>
+        }
+        <hr />
     }
 }
 else
 {
-    <div>No claims found</div>
+    <div>No identities found</div>
 }
 <h5>@RendererInfo.Name</h5>
 
@@ -53,10 +45,6 @@ else
         if (authenticationState is not null)
         {
             var state = await authenticationState;
-            if (state is CustomAuthenticationState s)
-            {
-                accountPermissions = s.AccountPermissions;
-            }
             user = state?.User;
             SplitSubjectId(user);
         }

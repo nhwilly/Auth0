@@ -31,26 +31,34 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         }
 
         // Clone the authenticated user to avoid modifying the original
-        var clonedUser = CloneUser(user);
+        var clonedUser = ClearAllIdentitiesExceptAuth0(user);
 
         // Enhance the cloned user with permission claims
-        var permissions = _permissionService.GetMemberPermissions(clonedUser);
+        var memberIdentities = await _permissionService.AddAccountMemberIdentities(clonedUser);
 
+        clonedUser.AddIdentities(memberIdentities);
         // Return the enhanced authentication state
-        return new CustomAuthenticationState(clonedUser) { AccountPermissions = permissions };
+        return new AuthenticationState(clonedUser);
     }
-    private ClaimsPrincipal CloneUser(ClaimsPrincipal user)
+    private ClaimsPrincipal ClearAllIdentitiesExceptAuth0(ClaimsPrincipal user)
     {
         // Create new ClaimsIdentity instances for each identity in the principal
-        var clonedIdentities = user.Identities.Select(identity =>
-            new ClaimsIdentity(
-                identity.Claims,
-                identity.AuthenticationType,
-                identity.NameClaimType,
-                identity.RoleClaimType));
+        var auth0Identity = user.Identities.FirstOrDefault(identity => identity.AuthenticationType == "AuthenticationTypes.Federation" && identity.IsAuthenticated);
+
+        if (auth0Identity == null)
+        {
+            _logger.LogWarning("No Auth0 identity found in the ClaimsPrincipal.");
+            return user;
+        }
+
+        var clonedIdentity = new ClaimsIdentity(
+            auth0Identity.Claims,
+            auth0Identity.AuthenticationType,
+            auth0Identity.NameClaimType,
+            auth0Identity.RoleClaimType);
 
         // Create a new ClaimsPrincipal with the cloned identities
-        return new ClaimsPrincipal(clonedIdentities);
+        return new ClaimsPrincipal(clonedIdentity);
     }
 
 }

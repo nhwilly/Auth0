@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Auth\MultiIdentityAuthStateProvider.cs" />
     <Compile Remove="Services\CustomAuthenticationStateProvider.cs" />
   </ItemGroup>
 
@@ -21,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Auth\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

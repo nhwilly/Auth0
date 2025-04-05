@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using SharedAuth;
-
+using ClaimData = SharedAuth.ClaimData;
 namespace Auth0;
 
 public class Program
@@ -24,51 +24,62 @@ public class Program
             options =>
             {
                 options.SerializeAllClaims = true;
-                options.SerializationCallback = async (authState) =>
+                options.SerializationCallback = async (authStateData) =>
                 {
-                    // Get the existing ClaimsPrincipal
-                    var user = authState.User;
-                    var isAuthenticated = user.Identity?.IsAuthenticated ?? false;
-                    if (authState is CustomAuthenticationState customState && isAuthenticated)
+                    var user = authStateData.User;
+
+                    if (user.Identity?.IsAuthenticated == true)
                     {
-                        //    // Add custom properties to the serialization
-                        //    var customData = new Dictionary<string, object>
-                        //    {
-                        //        { "AccountPermissions", customState.AccountPermissions }
-                        //    };
-                        //}
-                        //if (user.Identity?.IsAuthenticated == true)
-                        //{
-                        Console.WriteLine("Getting extra claim data...");
-                        var claimsData = user.Claims.Select(c => new ClaimData(c.Type, c.Value)).ToList();
-                        //claimsData.Add(new ClaimData("blah", "blahValue"));
-                        // Create a new AuthenticationStateData object
-                        var customStateData = new CustomAuthenticationStateData
+                        // Create a custom authentication state data
+                        var customStateData = new CustomAuthenticationStateData();
+
+                        // Explicitly serialize all identities
+                        var identities = user.Identities.Select(identity => new IdentityData
                         {
-                            Claims = claimsData,
-                            AccountPermissions = customState.AccountPermissions
-                        };
+                            AuthenticationType = identity?.AuthenticationType ?? string.Empty,
+                            IsAuthenticated = identity?.IsAuthenticated ?? false,
+                            Name = identity?.Name ?? string.Empty,
+                            Claims = [.. (identity?.Claims??[]).Select(c => new ClaimData
+                            {
+                                Type = c.Type,
+                                Value = c.Value,
+                                ValueType = c.ValueType,
+                                Issuer = c.Issuer
+                            })]
+                        }).ToList();
+
+                        customStateData.Identities = identities;
 
                         return await Task.FromResult(customStateData);
                     }
 
-                    // Return null for unauthenticated users
                     return null;
                 };
             });
+        builder.Services.AddSingleton(new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new CustomAuthStateJsonConverter(), new CustomAuthStateJsonConverter2() }
+        });
 
         builder.Services.AddAuth0WebAppAuthentication(options =>
         {
             options.Domain = builder.Configuration["Auth0:Domain"] ?? throw new Exception("Missing Auth0:Domain from appsettings.json");
             options.ClientId = builder.Configuration["Auth0:ClientId"] ?? throw new Exception("Missing Auth0:ClientId from appsettings.json");
             options.Scope = "openid profile email";
-
         });
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IPermissionService, PermissionService>();
-        builder.Services.AddMemoryCache();
+        builder.Services.AddScoped<IAccountMemberService, AccountMemberService>();
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.SerializerOptions.Converters.Add(new CustomAuthStateJsonConverter());
+            options.SerializerOptions.Converters.Add(new CustomAuthStateJsonConverter2());
+        });
 
         var app = builder.Build();
 

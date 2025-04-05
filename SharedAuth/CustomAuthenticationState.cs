@@ -8,13 +8,10 @@ namespace SharedAuth;
 //[Serializable]
 public class CustomAuthenticationState : AuthenticationState
 {
-    private readonly IEnumerable<AccountMemberPermissions> _accountPermissions = [];
-    public List<AccountMemberPermissions> AccountPermissions { get; set; } = [];
-    public CustomAuthenticationState(ClaimsPrincipal user) : base(user) { }
 
 }
 
-public class CustomAuthenticationStateData: AuthenticationStateData
-{
-    public List<AccountMemberPermissions> AccountPermissions { get; set; } = [];    
-}
+//public class CustomAuthenticationStateData: AuthenticationStateData
+//{
+//    public List<AccountMemberPermissions> AccountPermissions { get; set; } = [];    
+//}
