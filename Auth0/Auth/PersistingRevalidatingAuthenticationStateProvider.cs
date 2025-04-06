@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Web;
 using SharedAuth;
+using System.Threading.Tasks;
 
 namespace Auth0.Auth;
 public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider
@@ -16,6 +17,9 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
     private readonly IdentityOptions _options;
     private readonly IAccountMemberService _accountMemberService;
     private readonly PersistingComponentStateSubscription _subscription;
+    private readonly PersistingComponentStateSubscription _serverSubscription;
+    private readonly PersistingComponentStateSubscription _clientSubscription;
+
     private readonly ILogger<PersistingRevalidatingAuthenticationStateProvider> _logger;
     private Task<AuthenticationState>? _authenticationStateTask;
 
@@ -33,7 +37,8 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         _options = options.Value;
 
         AuthenticationStateChanged += OnAuthenticationStateChanged;
-        _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
+        //_subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
+        _serverSubscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
         _accountMemberService = accountMemberService;
         _logger = logger;
     }
@@ -43,6 +48,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
     protected override async Task<bool> ValidateAuthenticationStateAsync(
         AuthenticationState authenticationState, CancellationToken ct)
     {
+        _logger.LogInformation("Validating authentication state...");
         // Get the user manager from a new scope to ensure it fetches fresh data
         await using var scope = _scopeFactory.CreateAsyncScope();
         return ValidateSecurityStampAsync(authenticationState.User);
@@ -50,6 +56,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
 
     private bool ValidateSecurityStampAsync(ClaimsPrincipal principal)
     {
+        _logger.LogInformation("ValidateSecurityStampAsync...");
         if (principal.Identity?.IsAuthenticated is false)
         {
             return false;
@@ -57,11 +64,17 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         return true;
     }
 
-    private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
+    private async Task<List<ClaimsIdentity>> GetAccountMemberIdentities(string userId)
     {
-        _authenticationStateTask = authenticationStateTask;
-    }
+        _logger.LogInformation("GetAccountMemberIdentities...");
+        List<ClaimsIdentity> memberIdentities = [];
 
+        var memberPermissions = await _accountMemberService.GetAccountMemberPermissionsAsync(userId);
+        memberIdentities = [.. memberPermissions.Select(m =>
+           new ClaimsIdentity(m.Claims.Select(c => new Claim(c.Type, c.Value)), m.AccountName) { Label = m.AccountId.ToString() })];
+
+        return memberIdentities;
+    }
     private ClaimsIdentity? GetAuth0Identity(ClaimsPrincipal user)
     {
         var auth0Identity = user.Identities.FirstOrDefault(identity =>
@@ -84,13 +97,21 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         return auth0Data;
     }
 
-    public override Task<AuthenticationState> GetAuthenticationStateAsync()
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
     {
-        return base.GetAuthenticationStateAsync();
-    }
+        _logger.LogError("OnAuthenticationStateChanged...");
+        var authenticationState = authenticationStateTask.GetAwaiter().GetResult();
+        var principal = authenticationState.User;
+        foreach (var identity in principal.Identities)
+        {
+            _logger.LogWarning($"\tIdentity: {identity.AuthenticationType}, IsAuthenticated: {identity.IsAuthenticated}, Name: {identity.Name}");
 
+        }
+        _authenticationStateTask = authenticationStateTask;
+    }
     private async Task OnPersistingAsync()
     {
+        _logger.LogInformation("OnPersistingAsync...");
         if (_authenticationStateTask is null)
         {
             throw new UnreachableException($"Authentication state not set in {nameof(RevalidatingServerAuthenticationStateProvider)}.{nameof(OnPersistingAsync)}().");
@@ -99,36 +120,56 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         var authenticationState = await _authenticationStateTask;
         var principal = authenticationState.User;
 
-
-        var auth0Identity = GetAuth0Identity(principal);
-
-        if (auth0Identity is null) { return; }
-
-        (var userId, var identityProvider) = GetUserIdAndIdentityProvider(auth0Identity);
-
-        var auth0Data = CreateAuth0IdentityData(auth0Identity);
-        var authStateData = new CustomAuthenticationStateData
+        if (principal.Identity?.IsAuthenticated == true)
         {
-            Identities = [auth0Data],
-        };
-
-        if (userId != null)
-        {
-            List<AccountMemberPermissions> memberPermissions = await _accountMemberService.GetAccountMemberPermissionsAsync(userId);
-            var memberIdentityData = memberPermissions.Select(m =>
-                new IdentityData
+            var auth0Identity = GetAuth0Identity(principal);
+            if (auth0Identity is null || auth0Identity.IsAuthenticated == false) { return; }
+            (var userId, var identityProvider) = GetUserIdAndIdentityProvider(auth0Identity);
+            if (!string.IsNullOrWhiteSpace(userId))
+            {
+                try
                 {
-                    AuthenticationType = "Sezami",
-                    IsAuthenticated = true,
-                    Name = m.AccountName,
-                    Claims = [.. (m.Claims ?? []).Select(c => new ClaimDto { Type = c.Type, Value = c.Value })]
-                }
-            );
+                    var memberIdentities = await GetAccountMemberIdentities(userId);
+                    memberIdentities.Add(auth0Identity);
 
-            authStateData.Identities.AddRange(memberIdentityData);
-            _state.PersistAsJson(nameof(CustomAuthenticationStateData), authStateData);
+                    var enhancedPrincipal = new ClaimsPrincipal(memberIdentities);
+
+                    var newAuthState = new AuthenticationState(enhancedPrincipal);
+                    _authenticationStateTask = Task.FromResult(newAuthState);
+
+                    NotifyAuthenticationStateChanged(_authenticationStateTask);
+
+                    principal = enhancedPrincipal;
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception but don't fail the persistence
+                    // This ensures that even if getting additional identities fails, the basic auth still works
+                    var logger = _scopeFactory.CreateScope().ServiceProvider.GetService<ILogger<PersistingRevalidatingAuthenticationStateProvider>>();
+                    logger?.LogError(ex, "Error while retrieving additional identities for user {UserId}", userId);
+                }
+
+                var identities = principal.Identities.Select(mi => new IdentityData
+                {
+                    AuthenticationType = mi?.AuthenticationType ?? string.Empty,
+                    IsAuthenticated = mi?.IsAuthenticated == false,
+                    Name = mi?.Name ?? string.Empty,
+                    Claims = [.. (mi?.Claims ?? []).Select(c => new ClaimDto { Type = c.Type, Value = c.Value })]
+                }).ToList();
+
+                var authStateData = new CustomAuthenticationStateData
+                {
+                    Identities = identities,
+                };
+
+                _state.PersistAsJson(nameof(CustomAuthenticationStateData), authStateData);
+            }
+
         }
     }
+    // get member permissions method
+    // create identities method
+    // map identity to identitydata method
 
     private (string userId, string identityProvider) GetUserIdAndIdentityProvider(ClaimsIdentity identity)
     {
