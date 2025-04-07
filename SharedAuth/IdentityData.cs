@@ -2,31 +2,18 @@
 
 namespace SharedAuth;
 
-// public class CustomAuthenticationStateData : AuthenticationStateData
-// {
-//     public List<IdentityData> Identities { get; set; } = new();
-//     public  const bool CustomStateData = true;
-//
-//     // Other custom properties...
-//
-//     // You might need to override methods from the base class
-//     // to ensure your identities list is used during deserialization
-// }
-
 public class IdentityData
 {
-    //public required string Issuer { get; set; }
-    public required string AuthenticationType { get; set; }
-    public bool IsAuthenticated { get; set; }
-    public required string Name { get; set; }
-    //public required string Id { get; set; }
-    public List<ClaimData> Claims { get; set; } = [];
+  public required string AuthenticationType { get; init; } = string.Empty;
+  public bool IsAuthenticated { get; init; } 
+  public required string Name { get; init; } = string.Empty;
+  public List<ClaimDto> Claims { get; init; } = [];
 }
 
-// public class ClaimData
-// {
-//     public string Type { get; set; }
-//     public string Value { get; set; }
-//     public string ValueType { get; set; }
-//     public string Issuer { get; set; }
-// }
+public class ClaimDto
+{
+  public required string Type { get; init; } = string.Empty;
+  public required string Value { get; init; } = string.Empty;
+  public required string Issuer { get; init; } = string.Empty;
+  
+}

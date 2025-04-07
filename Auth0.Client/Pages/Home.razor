@@ -9,22 +9,23 @@
     @foreach (var identity in user.Identities)
     {
         <div>
-            <b>Authentication Type:</b>@identity.AuthenticationType
+            <b>Identity Authentication Type:</b>@identity.AuthenticationType
         </div>
         <div>
-            <b>IsAuthenticated:</b>@identity.IsAuthenticated
+            <b>Identity IsAuthenticated:</b>@identity.IsAuthenticated
         </div>
         <div>
-            <b>Label:</b>@identity.Label
+            <b>Identity Label:</b>@identity.Label
         </div>
         <div>
-            <b>Name:</b>@identity.Name
+            <b>Identity Name:</b>@identity.Name
         </div>
         @foreach (var claim in identity.Claims)
         {
             <div style="display: flex; gap: 1rem;">
-                <strong>@claim.Type:</strong>
-                <span>@claim.Value</span>
+                <strong>Claim type:</strong>@claim.Type
+                <strong>Claim value:</strong>@claim.Value
+                <strong>Claim issuer:</strong>@claim.Issuer
             </div>
         }
 
@@ -86,4 +87,6 @@ else
     }
 
 }
+
+
 

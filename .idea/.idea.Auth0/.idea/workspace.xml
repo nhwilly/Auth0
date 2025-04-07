@@ -8,7 +8,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76b6533c-6fb9-4e96-b685-7c1330fef7e6" name="Changes" comment="" />
+    <list default="true" id="76b6533c-6fb9-4e96-b685-7c1330fef7e6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Auth0/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Auth0/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth0.Client/Pages/Home.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0.Client/Pages/Home.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth0.Client/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0.Client/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth0/Auth/CustomAuthStateProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0/Auth/CustomAuthStateProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth0/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharedAuth/IdentityData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedAuth/IdentityData.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,53 +27,56 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "nhwilly"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;nhwilly&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/nhwilly/Auth0.git",
-    "accountId": "95b224c3-eb0b-4dec-85b9-b79c8509ed33"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/nhwilly/Auth0.git&quot;,
+    &quot;accountId&quot;: &quot;95b224c3-eb0b-4dec-85b9-b79c8509ed33&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2688343a34718346671b283a3e9faf9245b671a8944e88d5c7ef92589b254/ClaimData.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bdf962dd7e8443d262d52ee832a1466fe763fb2169f7a3dfc2fe91aa521392/AuthenticationStateSerializationOptions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Auth0/Auth/PermissionService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SharedAuth/CustomAuthenticationState.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SharedAuth/IdentityData.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2vP9gyIBkqmbkuO9wDsb0Ge7CsN" />
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.Auth0.Client.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "using-callback",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.Auth0: https.executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Project.Auth0.Client.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;SolutionBuilderGeneralOptionsPage&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RunManager" selected=".NET Project.Auth0.Client">
+}</component>
+  <component name="RunManager" selected=".NET Launch Settings Profile.Auth0: https">
     <configuration name="Auth0.Client" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -92,6 +102,7 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
+      <browser name="37cae5b9-e8b2-4949-9172-aafa37fbc09c" />
       <option name="GENERATE_APPLICATIONHOST_CONFIG" value="1" />
       <option name="SHOW_IIS_EXPRESS_OUTPUT" value="0" />
       <option name="SEND_DEBUG_REQUEST" value="1" />
@@ -110,6 +121,8 @@
       <option name="presentableId" value="Default" />
       <updated>1744035957871</updated>
       <workItem from="1744035959528" duration="6227000" />
+      <workItem from="1744057670078" duration="2860000" />
+      <workItem from="1744060597461" duration="1015000" />
     </task>
     <task id="LOCAL-00001" summary="working">
       <option name="closed" value="true" />
@@ -142,5 +155,24 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="working" />
     <option name="LAST_COMMIT_MESSAGE" value="working" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Auth0/Program.cs</url>
+          <line>55</line>
+          <properties documentPath="E:\repos\ComponentLibraries\Auth0\Auth0\Program.cs" containingFunctionPresentation="Lambda expression inside Method 'Main'">
+            <startOffsets>
+              <option value="1951" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1991" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
