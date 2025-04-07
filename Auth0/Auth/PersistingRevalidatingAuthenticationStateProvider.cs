@@ -146,10 +146,6 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
 
     }
 
-    // get member permissions method
-    // create identities method
-    // map identity to identitydata method
-
     private (string userId, string identityProvider) GetUserIdAndIdentityProvider(ClaimsIdentity identity)
     {
         var claimValue = identity.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
