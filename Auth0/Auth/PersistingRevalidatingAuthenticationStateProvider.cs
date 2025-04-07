@@ -1,7 +1,4 @@
-﻿// hello...
-
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -87,12 +84,35 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         _logger.LogInformation("OnAuthenticationStateChanged...");
         var authenticationState = authenticationStateTask.GetAwaiter().GetResult();
         var principal = authenticationState.User;
-        foreach (var identity in principal.Identities)
-        {
-            _logger.LogInformation($"\t\t\tIdentity: {identity.AuthenticationType}, IsAuthenticated: {identity.IsAuthenticated}, Name: {identity.Name}");
-
-        }
         _authenticationStateTask = authenticationStateTask;
+
+        if (principal.Identity?.IsAuthenticated == true)
+        {
+            var auth0Identity = GetAuth0Identity(principal);
+            if (auth0Identity is null || auth0Identity.IsAuthenticated == false) { return; }
+            (var userId, var identityProvider) = GetUserIdAndIdentityProvider(auth0Identity);
+            if (!string.IsNullOrWhiteSpace(userId))
+            {
+                try
+                {
+                    var memberIdentities = Task.Run(async () => await GetAccountMemberIdentities(userId)).Result;
+                    memberIdentities.Add(auth0Identity);
+
+                    var enhancedPrincipal = new ClaimsPrincipal(memberIdentities);
+
+                    var newAuthState = new AuthenticationState(enhancedPrincipal);
+                    _authenticationStateTask = Task.FromResult(newAuthState);
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception but don't fail the persistence
+                    // This ensures that even if getting additional identities fails, the basic auth still works
+                    var logger = _scopeFactory.CreateScope().ServiceProvider.GetService<ILogger<PersistingRevalidatingAuthenticationStateProvider>>();
+                    logger?.LogError(ex, "Error while retrieving additional identities for user {UserId}", userId);
+                    _authenticationStateTask = authenticationStateTask;
+                }
+            }
+        }
     }
     private async Task OnPersistingAsync()
     {
@@ -108,51 +128,24 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
 
         if (principal.Identity?.IsAuthenticated == true)
         {
-            var auth0Identity = GetAuth0Identity(principal);
-            if (auth0Identity is null || auth0Identity.IsAuthenticated == false) { return; }
-            (var userId, var identityProvider) = GetUserIdAndIdentityProvider(auth0Identity);
-            if (!string.IsNullOrWhiteSpace(userId))
+            var identities = principal.Identities.Select(mi => new IdentityData
             {
-                try
-                {
-                    var memberIdentities = await GetAccountMemberIdentities(userId);
-                    memberIdentities.Add(auth0Identity);
+                AuthenticationType = mi?.AuthenticationType ?? string.Empty,
+                IsAuthenticated = mi?.IsAuthenticated == false,
+                Name = mi?.Name ?? string.Empty,
+                Claims = [.. (mi?.Claims ?? []).Select(c => new ClaimDto { Type = c.Type, Value = c.Value })]
+            }).ToList();
 
-                    var enhancedPrincipal = new ClaimsPrincipal(memberIdentities);
+            var authStateData = new CustomAuthenticationStateData
+            {
+                Identities = identities,
+            };
 
-                    var newAuthState = new AuthenticationState(enhancedPrincipal);
-                    _authenticationStateTask = Task.FromResult(newAuthState);
-
-                    NotifyAuthenticationStateChanged(_authenticationStateTask);
-
-                    principal = enhancedPrincipal;
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception but don't fail the persistence
-                    // This ensures that even if getting additional identities fails, the basic auth still works
-                    var logger = _scopeFactory.CreateScope().ServiceProvider.GetService<ILogger<PersistingRevalidatingAuthenticationStateProvider>>();
-                    logger?.LogError(ex, "Error while retrieving additional identities for user {UserId}", userId);
-                }
-
-                var identities = principal.Identities.Select(mi => new IdentityData
-                {
-                    AuthenticationType = mi?.AuthenticationType ?? string.Empty,
-                    IsAuthenticated = mi?.IsAuthenticated == false,
-                    Name = mi?.Name ?? string.Empty,
-                    Claims = [.. (mi?.Claims ?? []).Select(c => new ClaimDto { Type = c.Type, Value = c.Value })]
-                }).ToList();
-
-                var authStateData = new CustomAuthenticationStateData
-                {
-                    Identities = identities,
-                };
-
-                _state.PersistAsJson(nameof(CustomAuthenticationStateData), authStateData);
-            }
-
+            _state.PersistAsJson(nameof(CustomAuthenticationStateData), authStateData);
         }
+
     }
+
     // get member permissions method
     // create identities method
     // map identity to identitydata method
