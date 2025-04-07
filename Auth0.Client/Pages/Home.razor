@@ -36,15 +36,9 @@ else
     <div>No identities found</div>
 }
 <h5>@RendererInfo.Name</h5>
-<div>
-    <Bit.BlazorUI.BitButton OnClick="Hello">Click it</Bit.BlazorUI.BitButton>
-</div>
+
+
 @code {
-    private async Task Hello()
-    {
-        var p = await authenticationState;
-        var u = p.User;
-    }
     private ClaimsPrincipal? user;
     private string? name;
     private string? id;

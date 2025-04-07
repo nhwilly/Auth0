@@ -16,8 +16,6 @@
     <ProjectReference Include="..\SharedAuth\SharedAuth.csproj" />
     <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />
-	  <PackageReference Include="Bit.BlazorUI" Version="9.5.1" />
-	  <PackageReference Include="Bit.BlazorUI.Icons" Version="9.5.1" />
   </ItemGroup>
 
 </Project>
