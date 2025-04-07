@@ -61,7 +61,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
       // turn the permissions into identities
       var permissionIdentities = memberPermissions
         .Select(amp =>
-          new ClaimsIdentity(amp.Permissions.Select(c =>
+          new ClaimsIdentity(amp.Claims.Select(c =>
             new Claim(c.Type, c.Value)), amp.AccountName) { Label = amp.AccountId.ToString() });
 
       identities.AddRange(permissionIdentities);
