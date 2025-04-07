@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Text.Json;
 using Auth0.AspNetCore.Authentication;
 using Auth0.Auth;
@@ -6,7 +5,6 @@ using Auth0.Components;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
-using SharedAuth;
 using ClaimData = SharedAuth.ClaimData;
 namespace Auth0;
 
@@ -31,7 +29,6 @@ public class Program
                     if (user.Identity?.IsAuthenticated == true)
                     {
                         // Create a custom authentication state data
-                        var customStateData = new CustomAuthenticationStateData();
 
                         // Explicitly serialize all identities
                         var identities = user.Identities.Select(identity => new IdentityData

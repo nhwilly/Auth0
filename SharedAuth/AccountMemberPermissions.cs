@@ -7,7 +7,7 @@ public class AccountMemberPermissions
 {
     public string AccountName { get; set; } = string.Empty;
     public Guid AccountId { get; set; }
-    public List<Claim> Claims { get; set; } = [];
+    public List<Claim> Permissions { get; set; } = [];
 }
 
 

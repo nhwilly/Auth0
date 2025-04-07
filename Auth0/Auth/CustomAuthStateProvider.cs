@@ -19,7 +19,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        _logger.LogInformation("CustomAuthStateProvider: Getting authentication state");
+        _logger.LogInformation("Server - CustomAuthStateProvider: Getting authentication state");
 
         // Get the current user from the HttpContext
         var user = _httpContextAccessor.HttpContext?.User;
