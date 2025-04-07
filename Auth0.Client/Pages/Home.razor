@@ -6,7 +6,6 @@
 
 @if (user?.Identities?.Any() ?? false)
 {
-
     @foreach (var identity in user.Identities)
     {
         <div>
@@ -22,12 +21,13 @@
                 <span>@claim.Value</span>
             </div>
         }
-        <hr />
+
+        <hr/>
     }
 }
 else
 {
-    <div>No identities foundPermission>
+    <div>No identities foundPermission>></div>
 }
 <h5>@RendererInfo.Name</h5>
 
@@ -37,8 +37,7 @@ else
     private string? id;
     private string? identityProvider;
     private List<AccountMemberPermissions> accountPermissions = new List<AccountMemberPermissions>();
-    [CascadingParameter]
-    private Task<AuthenticationState>? authenticationState { get; set; }
+    [CascadingParameter] private Task<AuthenticationState>? authenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,6 +48,7 @@ else
             SplitSubjectId(user);
         }
     }
+
     private void SplitSubjectId(ClaimsPrincipal claimsPrincipal)
     {
         if (!claimsPrincipal?.Claims?.Any() ?? false)
@@ -56,6 +56,7 @@ else
             ClearValues();
             return;
         }
+
         var claim = claimsPrincipal.Claims.FirstOrDefault(x =>
             x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
@@ -66,14 +67,17 @@ else
             ClearValues();
             return;
         }
+
         var parts = claimValue.Split('|');
         identityProvider = parts[0];
         id = parts[1];
     }
+
     private void ClearValues()
     {
         identityProvider = string.Empty;
         id = string.Empty;
-
     }
+
 }
+

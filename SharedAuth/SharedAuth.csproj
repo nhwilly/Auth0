@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Compile Remove="CustomAuthenticationState.cs" />
-    <Compile Remove="CustomAuthenticationStateData.cs" />
     <Compile Remove="CustomAuthStateJsonConverter.cs" />
   </ItemGroup>
 

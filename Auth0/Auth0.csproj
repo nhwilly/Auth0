@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Remove="Auth\Auth0EnhancedAuthStateProvider.cs" />
     <Compile Remove="Auth\CustomAuthStateProvider .cs" />
+    <Compile Remove="Auth\PermissionService.cs" />
   </ItemGroup>
 
   <ItemGroup>
