@@ -15,8 +15,13 @@ public class Program
   public static void Main(string[] args)
   {
     var builder = WebApplication.CreateBuilder(args);
-
-    // Add services to the container.
+    var jsonOptions = new JsonSerializerOptions
+    {
+      PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+      WriteIndented = true,
+      // Add other settings as needed
+    };
+    builder.Services.AddSingleton(jsonOptions);    // Add services to the container.
     builder.Services.AddRazorComponents()
       .AddInteractiveServerComponents()
       .AddInteractiveWebAssemblyComponents()
@@ -48,7 +53,7 @@ public class Program
                     { Type = c.Type, Value = c.Value, Issuer = c.Issuer })
                 ]
               };
-              identitiesMappedAsClaimValue.Add(JsonSerializer.Serialize(mappedIdentity));
+              identitiesMappedAsClaimValue.Add(JsonSerializer.Serialize(mappedIdentity,jsonOptions));
               stateData.Claims =
                 [.. identitiesMappedAsClaimValue.Select(d => new ClaimData(nameof(ClaimData), d))];
             }

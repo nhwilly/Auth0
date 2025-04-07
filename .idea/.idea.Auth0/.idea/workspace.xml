@@ -8,13 +8,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76b6533c-6fb9-4e96-b685-7c1330fef7e6" name="Changes" comment="">
+    <list default="true" id="76b6533c-6fb9-4e96-b685-7c1330fef7e6" name="Changes" comment="save">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Auth0/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Auth0/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Auth0.Client/Pages/Home.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0.Client/Pages/Home.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Auth0.Client/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0.Client/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Auth0/Auth/CustomAuthStateProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0/Auth/CustomAuthStateProvider.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Auth0/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SharedAuth/IdentityData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedAuth/IdentityData.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +121,7 @@
       <updated>1744035957871</updated>
       <workItem from="1744035959528" duration="6227000" />
       <workItem from="1744057670078" duration="2860000" />
-      <workItem from="1744060597461" duration="1015000" />
+      <workItem from="1744060597461" duration="3522000" />
     </task>
     <task id="LOCAL-00001" summary="working">
       <option name="closed" value="true" />
@@ -132,7 +131,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744042589608</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="save">
+      <option name="closed" value="true" />
+      <created>1744061882336</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744061882336</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -154,23 +161,24 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="working" />
-    <option name="LAST_COMMIT_MESSAGE" value="working" />
+    <MESSAGE value="save" />
+    <option name="LAST_COMMIT_MESSAGE" value="save" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Auth0/Program.cs</url>
-          <line>55</line>
-          <properties documentPath="E:\repos\ComponentLibraries\Auth0\Auth0\Program.cs" containingFunctionPresentation="Lambda expression inside Method 'Main'">
+          <url>file://$PROJECT_DIR$/Auth0.Client/Program.cs</url>
+          <line>42</line>
+          <properties documentPath="E:\repos\ComponentLibraries\Auth0\Auth0.Client\Program.cs" containingFunctionPresentation="Lambda expression inside Method 'Main'">
             <startOffsets>
-              <option value="1951" />
+              <option value="1396" />
             </startOffsets>
             <endOffsets>
-              <option value="1991" />
+              <option value="1441" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="2" />
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

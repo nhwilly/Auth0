@@ -11,6 +11,14 @@ class Program
   static async Task Main(string[] args)
   {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
+    var jsonOptions = new JsonSerializerOptions
+    {
+      PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+      WriteIndented = true,
+      // Add other settings as needed
+    };
+    builder.Services.AddSingleton(jsonOptions);
+
     builder.Services.AddAuthorizationCore();
     builder.Services.AddCascadingAuthenticationState();
     builder.Services.AddAuthenticationStateDeserialization(options =>
@@ -18,36 +26,41 @@ class Program
         options.DeserializationCallback = async (authStateData) =>
         {
           List<ClaimsIdentity> authStateIdentities = [];
-          if (authStateData is not null)
+          if (authStateData is null)
+            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(authStateIdentities)));
+
+          foreach (var claimData in authStateData?.Claims ?? [])
           {
-            foreach (var claimData in authStateData?.Claims ?? [])
+            try
             {
-              var identityData = JsonSerializer.Deserialize<IdentityData>(claimData.Value);
+              var identityData = JsonSerializer.Deserialize<IdentityData>(claimData.Value, jsonOptions);
               if (identityData is null)
               {
                 continue;
               }
 
-              var claims=new List<Claim>();
-              var nameClaim = identityData.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-              foreach (var claim in identityData.Claims)
+              var claims = new List<Claim>();
+              foreach (var claimDto in identityData.Claims)
               {
-                
+                claims.Add(new Claim(claimDto.Type, claimDto.Value, "", claimDto.Issuer));
               }
+              claims.Add(new Claim(ClaimTypes.Name, identityData?.Name ?? ""));
               ClaimsIdentity identity = new(
-                identityData.Claims.Select(c => new Claim(c.Type, c.Value, "", c.Issuer)),
-                identityData.AuthenticationType,
+                claims,
+                identityData?.AuthenticationType ?? string.Empty,
                 ClaimTypes.Name,
                 ClaimTypes.Role
               );
               authStateIdentities.Add(identity);
             }
-
-            var authenticatedIdentities = authStateIdentities.Where(i => i.IsAuthenticated).ToList();
-            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(authenticatedIdentities)));
+            catch (JsonException jsonException)
+            {
+              Console.WriteLine(jsonException);
+            }
           }
 
-          return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(authStateIdentities)));
+          var authenticatedIdentities = authStateIdentities.Where(i => i.IsAuthenticated).ToList();
+          return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(authenticatedIdentities)));
         };
       }
     );

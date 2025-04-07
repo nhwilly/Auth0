@@ -35,8 +35,8 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     var parts = claimValue.Split('|');
     if (parts.Length != 2)
     {
-      _logger.LogError($"Unable to parse NameIdentifier claim from Auth0 {0}");
-      throw new Exception($"Unable to parse NameIdentifier claim from Auth0 {0}");
+      _logger.LogError("Unable to parse NameIdentifier claim from Auth0");
+      throw new Exception("Unable to parse NameIdentifier claim from Auth0");
     }
 
     return (parts[1], parts[0]);
@@ -110,7 +110,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         claims.Add(new Claim(ClaimTypes.Name, p.AccountName, "", "https://sezami.io"));
         claims.Add(new Claim("account.name", p.AccountName, "", "https://sezami.io"));
         claims.Add(new Claim("account.id", p.AccountId.ToString(), "", "https://sezami.io"));
-        var identity = new ClaimsIdentity(claims, "Sezami") ;
+        var identity = new ClaimsIdentity(claims, "Sezami");
         identities.Add(identity);
       }
 
