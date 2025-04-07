@@ -100,6 +100,8 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
             throw new UnreachableException($"Authentication state not set in {nameof(RevalidatingServerAuthenticationStateProvider)}.{nameof(OnPersistingAsync)}().");
         }
 
+        // hello...
+
         var authenticationState = await _authenticationStateTask;
         var principal = authenticationState.User;
 
