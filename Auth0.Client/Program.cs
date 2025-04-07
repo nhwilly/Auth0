@@ -24,6 +24,11 @@ class Program
         {
             options.DeserializationCallback = async (authStateData) =>
             {
+                // claimData is type and value - that's all
+                // type is authentication type
+                // data is a json string of identityData
+                // identity data contains 
+                // all the identity stuff
                 // Check if the authentication state is of the expected type
                 if (authStateData is CustomAuthenticationStateData customState)
                 {
