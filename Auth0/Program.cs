@@ -15,7 +15,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
-            .AddInteractiveWebAssemblyComponents().AddAuthenticationStateSerialization;
+            .AddInteractiveWebAssemblyComponents();
 
         builder.Services.AddAuth0WebAppAuthentication(options =>
         {

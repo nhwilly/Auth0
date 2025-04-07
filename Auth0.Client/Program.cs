@@ -1,9 +1,6 @@
-﻿using System.Security.Claims;
-using System.Text.Json;
-using Auth0.Client.Auth;
+﻿using Auth0.Client.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using SharedAuth;
 namespace Auth0.Client;
 
 class Program

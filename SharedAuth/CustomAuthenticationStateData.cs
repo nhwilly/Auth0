@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 namespace SharedAuth;
 
-public class CustomAuthenticationStateData //: AuthenticationStateData
+public class CustomAuthenticationStateData 
 {
     public List<IdentityData> Identities { get; set; } = [];
 }
