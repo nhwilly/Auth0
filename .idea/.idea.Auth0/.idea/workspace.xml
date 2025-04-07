@@ -8,13 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76b6533c-6fb9-4e96-b685-7c1330fef7e6" name="Changes" comment="save">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Auth0/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Auth0/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth0.Client/Pages/Home.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0.Client/Pages/Home.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth0.Client/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0.Client/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth0/Auth/CustomAuthStateProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0/Auth/CustomAuthStateProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth0/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Auth0/Program.cs" afterDir="false" />
-    </list>
+    <list default="true" id="76b6533c-6fb9-4e96-b685-7c1330fef7e6" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,7 +115,7 @@
       <updated>1744035957871</updated>
       <workItem from="1744035959528" duration="6227000" />
       <workItem from="1744057670078" duration="2860000" />
-      <workItem from="1744060597461" duration="3522000" />
+      <workItem from="1744060597461" duration="3614000" />
     </task>
     <task id="LOCAL-00001" summary="working">
       <option name="closed" value="true" />
@@ -139,7 +133,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744061882336</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="save">
+      <option name="closed" value="true" />
+      <created>1744064372911</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744064372911</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -163,24 +165,5 @@
     <MESSAGE value="working" />
     <MESSAGE value="save" />
     <option name="LAST_COMMIT_MESSAGE" value="save" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Auth0.Client/Program.cs</url>
-          <line>42</line>
-          <properties documentPath="E:\repos\ComponentLibraries\Auth0\Auth0.Client\Program.cs" containingFunctionPresentation="Lambda expression inside Method 'Main'">
-            <startOffsets>
-              <option value="1396" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1441" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
