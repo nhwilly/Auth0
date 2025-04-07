@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server;
+﻿using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using System.Diagnostics;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Components.Web;
 using SharedAuth;
-using System.Threading.Tasks;
 
 namespace Auth0.Auth;
 public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider
@@ -17,8 +16,6 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
     private readonly IdentityOptions _options;
     private readonly IAccountMemberService _accountMemberService;
     private readonly PersistingComponentStateSubscription _subscription;
-    private readonly PersistingComponentStateSubscription _serverSubscription;
-    private readonly PersistingComponentStateSubscription _clientSubscription;
 
     private readonly ILogger<PersistingRevalidatingAuthenticationStateProvider> _logger;
     private Task<AuthenticationState>? _authenticationStateTask;
@@ -37,8 +34,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         _options = options.Value;
 
         AuthenticationStateChanged += OnAuthenticationStateChanged;
-        //_subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
-        _serverSubscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
+        _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
         _accountMemberService = accountMemberService;
         _logger = logger;
     }
@@ -49,7 +45,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         AuthenticationState authenticationState, CancellationToken ct)
     {
         _logger.LogInformation("Validating authentication state...");
-        // Get the user manager from a new scope to ensure it fetches fresh data
+
         await using var scope = _scopeFactory.CreateAsyncScope();
         return ValidateSecurityStampAsync(authenticationState.User);
     }
@@ -83,28 +79,14 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
 
         return auth0Identity;
     }
-
-    private IdentityData CreateAuth0IdentityData(ClaimsIdentity auth0Identity)
-    {
-        var auth0Data = new IdentityData
-        {
-            AuthenticationType = auth0Identity?.AuthenticationType ?? string.Empty,
-            IsAuthenticated = auth0Identity?.IsAuthenticated ?? false,
-            Name = auth0Identity?.Name ?? string.Empty,
-            Claims = [.. (auth0Identity?.Claims ?? []).Select(c => new ClaimDto { Type = c.Type, Value = c.Value })]
-        };
-
-        return auth0Data;
-    }
-
     private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
     {
-        _logger.LogError("OnAuthenticationStateChanged...");
+        _logger.LogInformation("OnAuthenticationStateChanged...");
         var authenticationState = authenticationStateTask.GetAwaiter().GetResult();
         var principal = authenticationState.User;
         foreach (var identity in principal.Identities)
         {
-            _logger.LogWarning($"\tIdentity: {identity.AuthenticationType}, IsAuthenticated: {identity.IsAuthenticated}, Name: {identity.Name}");
+            _logger.LogInformation($"\t\t\tIdentity: {identity.AuthenticationType}, IsAuthenticated: {identity.IsAuthenticated}, Name: {identity.Name}");
 
         }
         _authenticationStateTask = authenticationStateTask;
