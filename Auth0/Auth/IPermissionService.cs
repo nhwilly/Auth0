@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using SharedAuth;
 
 
 namespace Auth0.Auth;
