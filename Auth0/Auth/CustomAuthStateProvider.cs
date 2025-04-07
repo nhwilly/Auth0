@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
-using SharedAuth;
 
 namespace Auth0.Auth;
 
@@ -21,25 +20,21 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     {
         _logger.LogInformation("CustomAuthStateProvider: Getting authentication state");
 
-        // Get the current user from the HttpContext
         var user = _httpContextAccessor.HttpContext?.User;
 
         if (user?.Identity?.IsAuthenticated != true)
         {
-            // Return unauthenticated state if user is not authenticated
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
-        // Clone the authenticated user to avoid modifying the original
         var clonedUser = ClearAllIdentitiesExceptAuth0(user);
 
-        // Enhance the cloned user with permission claims
         var memberIdentities = await _permissionService.AddAccountMemberIdentities(clonedUser);
 
         clonedUser.AddIdentities(memberIdentities);
-        // Return the enhanced authentication state
         return new AuthenticationState(clonedUser);
     }
+
     private ClaimsPrincipal ClearAllIdentitiesExceptAuth0(ClaimsPrincipal user)
     {
         // Create new ClaimsIdentity instances for each identity in the principal
