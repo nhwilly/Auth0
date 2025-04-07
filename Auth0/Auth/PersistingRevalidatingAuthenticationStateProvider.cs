@@ -96,6 +96,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         _logger.LogInformation("OnPersistingAsync...");
         if (_authenticationStateTask is null)
         {
+
             throw new UnreachableException($"Authentication state not set in {nameof(RevalidatingServerAuthenticationStateProvider)}.{nameof(OnPersistingAsync)}().");
         }
 
