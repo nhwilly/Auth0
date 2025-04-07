@@ -14,6 +14,12 @@
         <div>
             <b>IsAuthenticated:</b>@identity.IsAuthenticated
         </div>
+        <div>
+            <b>Label:</b>@identity.Label
+        </div>
+        <div>
+            <b>Name:</b>@identity.Name
+        </div>
         @foreach (var claim in identity.Claims)
         {
             <div style="display: flex; gap: 1rem;">

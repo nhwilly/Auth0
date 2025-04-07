@@ -15,10 +15,12 @@ namespace SharedAuth;
 
 public class IdentityData
 {
-  public required string AuthenticationType { get; set; }
-  public bool IsAuthenticated { get; set; }
-  public required string Name { get; set; }
-  public List<ClaimData> Claims { get; set; } = [];
+    //public required string Issuer { get; set; }
+    public required string AuthenticationType { get; set; }
+    public bool IsAuthenticated { get; set; }
+    public required string Name { get; set; }
+    //public required string Id { get; set; }
+    public List<ClaimData> Claims { get; set; } = [];
 }
 
 // public class ClaimData

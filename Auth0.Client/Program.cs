@@ -8,47 +8,43 @@ namespace Auth0.Client;
 
 class Program
 {
-  static async Task Main(string[] args)
-  {
-    var builder = WebAssemblyHostBuilder.CreateDefault(args);
-    builder.Services.AddAuthorizationCore();
-    builder.Services.AddCascadingAuthenticationState();
-    builder.Services.AddAuthenticationStateDeserialization(options =>
+    static async Task Main(string[] args)
     {
-      options.DeserializationCallback = async (authStateData) =>
-      {
-        List<ClaimsIdentity> authStateIdentities = [];
-        foreach (var claimData in authStateData?.Claims.ToList() ?? [])
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+        builder.Services.AddAuthorizationCore();
+        builder.Services.AddCascadingAuthenticationState();
+        builder.Services.AddAuthenticationStateDeserialization(options =>
         {
-          var identityData = JsonSerializer.Deserialize<IdentityData>(claimData.Value);
-          ClaimsIdentity identity = new ClaimsIdentity(
-            (identityData?.Claims ?? []).Select(c => new Claim(c.Type, c.Value)),
-            identityData?.AuthenticationType ?? string.Empty,
-            ClaimTypes.Name,
-            ClaimTypes.Role
-          );
-          authStateIdentities.Add(identity);
+            options.DeserializationCallback = async (authStateData) =>
+            {
+                List<ClaimsIdentity> authStateIdentities = [];
+                if (authStateData is not null)
+                {
+                    foreach (var claimData in authStateData?.Claims ?? [])
+                    {
+                        var identityData = JsonSerializer.Deserialize<IdentityData>(claimData.Value);
+                        if (identityData is null) { continue; }
+                        ClaimsIdentity identity = new(
+                          identityData.Claims.Select(c => new Claim(c.Type, c.Value)),
+                          identityData.AuthenticationType,
+                          ClaimTypes.Name,
+                          ClaimTypes.Role
+                        );
+                        authStateIdentities.Add(identity);
+                    }
+
+                    var authenticatedIdentities = authStateIdentities.Where(i => i.IsAuthenticated).ToList();
+                    return new AuthenticationState(new ClaimsPrincipal(authenticatedIdentities));
+                }
+                return new AuthenticationState(new ClaimsPrincipal(authStateIdentities));
+            };
         }
+        );
 
-        if (!authStateIdentities.Any(i => i.IsAuthenticated))
-          return await Task.FromResult(
-            new AuthenticationState(
-              new ClaimsPrincipal(
-                new ClaimsIdentity()
-              )
-            )
-          );
-        // Create a ClaimsPrincipal with the authenticated identities
-        var authStateIdentitiesPrincipal = new ClaimsPrincipal(authStateIdentities);
-        // Return the authentication state with the authenticated user
-        return await Task.FromResult(new AuthenticationState(authStateIdentitiesPrincipal));
-      };
-    });
-
-    builder.Services.AddScoped(sp => new HttpClient
-    {
-      BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
-    });
-    await builder.Build().RunAsync();
-  }
+        builder.Services.AddScoped(sp => new HttpClient
+        {
+            BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
+        });
+        await builder.Build().RunAsync();
+    }
 }
